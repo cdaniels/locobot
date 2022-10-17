@@ -1,0 +1,9 @@
+<launch>
+  <!-- Transformation Configuration ... Setting Up the Relationships Between Coordinate Frames --> 
+  <node pkg="tf2_ros" type="static_transform_publisher" name="odom_to_locobot_base_footprint" args="0 0 0 0 0 0 1 odom locobot/base_footprint"/>
+  <node pkg="tf2_ros" type="static_transform_publisher" name="locobot_base_footprint_to_base_footprint" args="0 0 0 0 0 0 1 locobot/base_footprint base_footprint " />
+  <node pkg="tf2_ros" type="static_transform_publisher" name="locobot_base_link_to_base_link" args="0 0 0 0 0 0 1  locobot/base_link base_link" />
+  <!-- odom to base_footprint transform will be provided by the robot_pose_ekf node -->
+  <!-- map to odom will be provided by the AMCL -->
+  <node pkg="tf2_ros" type="static_transform_publisher" name="map_to_odom" args="0 0 0 0 0 0 1 map odom" />
+</launch>
