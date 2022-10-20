@@ -32,9 +32,9 @@ with rosbag.Bag(bagdir + 'Output_Locobot_DAN407.bag', 'w') as outbag:
             # msg.header.frame_id = "lidar_tower_link"
             outbag.write('/scan', msg, msg.header.stamp if msg._has_header else t)
             # outbag.write('/scan', msg, t)
-        # elif topic == "/locobot/odom":
-        #     outbag.write('/odom', msg, msg.header.stamp +  if msg._has_header else t)
-            # outbag.write('/odom', msg, t)
+        elif topic == "/locobot/odom":
+            outbag.write('/odom', msg, msg.header.stamp +  if msg._has_header else t)
+            outbag.write('/odom', msg, t)
         # else:
         #     topic = topic.replace('locobot/','')
         #     # outbag.write(topic, msg, msg.header.stamp if msg._has_header else t)

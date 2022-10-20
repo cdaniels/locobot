@@ -9,12 +9,14 @@
   <!-- Hector SLAM -->
   <!-- Subscribe: /scan, scan (sensor_msgs/LaserScan), syscommand (std_msgs/String) -->
   <!-- Publish: map_metadata (nav_msgs/MapMetaData), map (nav_msgs/OccupancyGrid), slam_out_pose (geometry_msgs/PoseStamped), poseupdate (geometry_msgs/PoseWithCovarianceStamped) /-->
-  <node pkg="hector_mapping" name="hector_mapping" type="hector_mapping" args="scan:=locobot/scan" />
+  <node pkg="hector_mapping" name="hector_mapping" type="hector_mapping" args="scan:=locobot/scan">
+    <param name="map_size" value="4096"/>
+  </node>
 
   <!-- Bag File-->
-  <arg name="bag_file_name" default="$(find locobot_localization)/bags/2022-09-29-20-00-53.bag"/>
+  <!--arg name="bag_file_name" default="$(find locobot_localization)/bags/2022-09-29-20-00-53.bag"/-->
   <!--arg name="bag_file_name" default="$(find locobot_localization)/bags/Output_Locobot_DAN407.bag"/-->
   <!-- play bag file for localization sim -->
-  <node pkg="rosbag" type="play" name="rosbag_play" output="screen" args="$(arg bag_file_name)"/>
+  <!-- node pkg="rosbag" type="play" name="rosbag_play" output="screen" args="$(arg bag_file_name)"/-->
 
 </launch>
