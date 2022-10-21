@@ -1,0 +1,6 @@
+<launch>
+  <!-- Bag File-->
+  <arg name="bag_file_name" default="$(find locobot_localization)/bags/2022-09-29-20-00-53.bag"/>
+  <!-- play bag file for localization sim -->
+  <node pkg="rosbag" type="play" name="rosbag_play" output="screen" args="$(arg bag_file_name)"/>
+</launch>

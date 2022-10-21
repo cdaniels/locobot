@@ -6,21 +6,15 @@
   <node pkg="rviz" type="rviz" name="rviz" args="-d $(find locobot_localization)/config/amcl.rviz" >
   </node> 
 
-  <!-- Map File -->
-  <arg name="map_file" default="$(find locobot_localization)/maps/DAN407_map.yaml" />
-  <!-- Map Server -->
-  <!-- Publish: /map, /map_metadata -->
-  <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)" />
+  <!-- launch map in which to localize -->
+  <include file="$(find locobot_localization)/launch/map_server.launch" />
 	
   <!-- AMCL localization-->
   <!-- Subscribe: /scan, /tf, /initialpose, /map -->
   <!-- Publish: /amcl_pose, /particlecloud, /tf -->
   <node pkg="amcl" name="amcl" type="amcl" args="scan:=locobot/scan tf:=locobot/tf" />
+  <!--node pkg="amcl" name="amcl" type="amcl" /-->
 
-  <!-- Bag File-->
-  <arg name="bag_file_name" default="$(find locobot_localization)/bags/2022-09-29-20-00-53.bag"/>
-  <!--arg name="bag_file_name" default="$(find locobot_localization)/bags/Output_Locobot_DAN407.bag"/-->
-  <!-- play bag file for localization sim -->
-  <node pkg="rosbag" type="play" name="rosbag_play" output="screen" args="$(arg bag_file_name)"/>
-
+  <!-- replay prerecorded data -->
+  <include file="$(find locobot_localization)/launch/raw_bag_player.launch" />
 </launch>
