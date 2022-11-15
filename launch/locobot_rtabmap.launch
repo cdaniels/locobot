@@ -1,0 +1,50 @@
+<launch>
+  <include file="$(find locobot_localization)/launch/tf_fix.launch" />
+
+  <include file="$(find rtabmap_ros)/launch/rtabmap.launch">
+    <arg name="rtabmap_args" value="--delete_db_on_start"/>
+    <arg name="localization" value="false"/>
+
+    <arg name="rtabmapviz" value="true"/>
+    <arg name="rviz" value="false"/>
+
+    <arg name="subscribe_scan" value="true"/>
+    <arg name="subscribe_rgbd" value="false"/>
+
+    <arg name="scan_topic" value="/locobot/scan"/>
+    <arg name="odom_topic" value="/locobot/odom"/>
+
+    
+    <!--arg name="imu_topic" value="/locobot/imu"/-->
+    <arg name="depth_topic" value="/locobot/camera/depth/image_rect_raw"/>
+    <arg name="rgb_topic" value="/locobot/camera/color/image_raw"/>
+    <arg name="camera_info_topic" value="/locobot/camera/color/camera_info"/>
+
+
+    <!--arg name="scan_topic" value="/jn0/base_scan"/>
+    <arg name="odom_topic" value="/az3/base_controller/odom"/>
+    <arg name="depth_topic" value="/data_throttled_image_depth/compressedDepth"/>
+    <arg name="rgb_topic" value="/data_throttled_image/compressed"/>
+    <arg name="camera_info_topic" value="/data_throttled_camera_info"/-->
+
+
+    <arg name="frame_id" value="/locobot/base_link"/>
+    <arg name="map_frame_id" value="/map"/>
+    <arg name="odom_frame_id" value="/odom"/>
+
+    <arg name="odom_sensor_sync" value="true"/>
+    <arg name="odom_tf_linear_variance" value="0.01"/>
+    <arg name="odom_tf_angular_variance" value="0.01"/>
+
+
+    <arg name="approx_sync" value="true"/>
+    <arg name="approx_sync_max_interval" value="0.05"/>
+    <arg name="queue_size" value="1000"/>
+  </include>
+
+  <!--node pkg="tf2_ros" type="static_transform_publisher" name="map_to_odom" args="0 0 0 0 0 0 1 map odom" /-->
+
+  <!-- replay prerecorded data -->
+  <include file="$(find locobot_localization)/launch/raw_bag_player.launch" />
+  <!--include file="$(find locobot_localization)/launch/fixed_bag_player.launch"/-->
+</launch>

@@ -1,0 +1,93 @@
+<launch>
+  <include file="$(find locobot_localization)/launch/tf_fix.launch" />
+
+
+  <!--node pkg="tf2_ros" type="static_transform_publisher" name="map_to_odom" args="0 0 0 0 0 0 1 map odom" /-->
+
+ <!-- Eg from  http://wiki.ros.org/rtabmap_ros/Tutorials/SetupOnYourRobot - Kinect & rgbdslam_datasets.launch -->
+
+ <!-- Choose visualization -->
+   <arg name="rviz" default="false" />
+   <arg name="rtabmapviz" default="true" /> 
+
+  <param name="use_sim_time" type="bool" value="True"/>
+
+
+<!-- TF FRAMES -->
+  <!--node pkg="tf" type="static_transform_publisher" name="world_to_map" 
+    args="0.0 0.0 0.0 0.0 0.0 0.0 /locobot/base_link /world 100" /-->
+
+  <group ns="rtabmap">
+
+    <!-- Odometry -->
+    <node pkg="rtabmap_ros" type="rgbd_odometry" name="rgbd_odometry" output="screen">
+      <remap from="rgb/image"       to="/locobot/camera/color/image_raw"/>
+      <remap from="depth/image"     to="/locobot/camera/depth/image_rect_raw"/>
+      <remap from="rgb/camera_info" to="/locobot/camera/color/camera_info"/>
+
+      <param name="frame_id" type="string" value="base_link"/>
+    </node>
+
+
+ <!-- Visual SLAM -->
+    <node name="rtabmap" pkg="rtabmap_ros" type="rtabmap" output="screen" args="--delete_db_on_start">
+          <param name="frame_id" type="string" value="camera_link"/>
+          <param name="subscribe_depth" type="bool" value="true"/>
+
+          <remap from="odom" to="/odom"/>
+          <remap from="rgb/image"       to="/locobot/camera/color/image_raw"/>
+          <remap from="depth/image"     to="/locobot/camera/depth/image_rect_raw"/>
+          <remap from="rgb/camera_info" to="/locobot/camera/color/camera_info"/>
+
+          <param name="queue_size" type="int" value="1000"/> 
+
+          <param name="frame_id" value="/locobot/base_link"/>
+          <param name="map_frame_id" value="/map"/>
+          <param name="odom_frame_id" value="/odom"/>
+
+          <!-- RTAB-Map's parameters -->
+          <param name="RGBD/AngularUpdate" type="string" value="0"/>
+          <param name="RGBD/LinearUpdate" type="string" value="0"/>
+          <param name="Rtabmap/TimeThr" type="string" value="700"/>
+          <param name="Mem/RehearsalSimilarity" type="string" value="0.45"/>
+          <param name="RGBD/OptimizeFromGraphEnd" type="string" value="true"/> 
+
+    </node>
+
+   <!-- Visualisation  -->
+    <node if="$(arg rtabmapviz)" pkg="rtabmap_ros" type="rtabmapviz" name="rtabmapviz" args="-d $(find rtabmap_ros)/launch/config/rgbd_gui.ini" output="screen">
+      <param name="subscribe_depth" type="bool" value="true"/>
+      <param name="subscribe_laserScan" type="bool" value="true"/>
+      <param name="subscribe_odom_info" type="bool" value="true"/>
+      <param name="queue_size" type="int" value="30"/>
+
+      <!--param name="frame_id" type="string" value="kinect"/-->
+
+      <remap from="rgb/image" to="/camera/rgb/image_color"/>
+      <remap from="depth/image" to="/camera/depth_registered/image_raw"/>
+      <remap from="rgb/camera_info" to="/camera/rgb/camera_info"/>
+      <remap from="odom" to="/locobot/odom"/>
+    </node>
+
+  </group>
+
+  <node if="$(arg rviz)" pkg="rviz" type="rviz" name="rviz" args="-d $(find rtabmap_ros)/launch/config/rgbdslam_datasets.rviz"/>
+  <node if="$(arg rviz)" pkg="nodelet" type="nodelet" name="points_xyzrgb" args="standalone rtabmap_ros/point_cloud_xyzrgb">
+    <remap from="rgb/image"       to="/locobot/camera/color/image_raw"/>
+    <remap from="depth/image"     to="/locobot/camera/depth/image_rect_raw"/>
+    <remap from="rgb/camera_info" to="/locobot/camera/color/camera_info"/>
+
+
+    <remap from="cloud"           to="voxel_cloud" />
+
+    <param name="queue_size" type="int" value="10"/>
+    <param name="decimation" type="double" value="4"/>
+  </node>
+
+
+  <!--node pkg="tf2_ros" type="static_transform_publisher" name="map_to_odom" args="0 0 0 0 0 0 1 map odom" /-->
+
+  <!-- replay prerecorded data -->
+  <include file="$(find locobot_localization)/launch/raw_bag_player.launch" />
+  <!--include file="$(find locobot_localization)/launch/fixed_bag_player.launch"/-->
+</launch>

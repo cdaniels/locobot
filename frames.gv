@@ -1,0 +1,25 @@
+digraph G {
+"base_link" -> "locobot/base_link"[label=" Broadcaster: /locobot_base_link_to_base_link\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"base_footprint" -> "base_link"[label=" Broadcaster: /rosbag_play\nAverage rate: 50.202\nBuffer length: 4.98\nMost recent transform: 1389744577.88\nOldest transform: 1389744572.901\n"];
+"base_footprint" -> "locobot/base_footprint"[label=" Broadcaster: /locobot_base_footprint_to_base_footprint\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"odom" -> "base_footprint"[label=" Broadcaster: /rosbag_play\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"map" -> "odom"[label=" Broadcaster: /rtabmap/rtabmap\nAverage rate: 20.202\nBuffer length: 4.95\nMost recent transform: 1668548739.762\nOldest transform: 1668548734.812\n"];
+"base_link" -> "wheelLB_linkWheel_link"[label=" Broadcaster: /rosbag_play\nAverage rate: 47.822\nBuffer length: 4.977\nMost recent transform: 1389744577.374\nOldest transform: 1389744572.397\n"];
+"wheelLB_linkWheel_link" -> "wheelLB_wheel_link"[label=" Broadcaster: /rosbag_play\nAverage rate: 47.822\nBuffer length: 4.977\nMost recent transform: 1389744577.374\nOldest transform: 1389744572.397\n"];
+"base_link" -> "wheelLF_linkWheel_link"[label=" Broadcaster: /rosbag_play\nAverage rate: 47.822\nBuffer length: 4.977\nMost recent transform: 1389744577.374\nOldest transform: 1389744572.397\n"];
+"wheelLF_linkWheel_link" -> "wheelLF_wheel_link"[label=" Broadcaster: /rosbag_play\nAverage rate: 47.822\nBuffer length: 4.977\nMost recent transform: 1389744577.374\nOldest transform: 1389744572.397\n"];
+"base_link" -> "wheelRB_linkWheel_link"[label=" Broadcaster: /rosbag_play\nAverage rate: 47.822\nBuffer length: 4.977\nMost recent transform: 1389744577.374\nOldest transform: 1389744572.397\n"];
+"wheelRB_linkWheel_link" -> "wheelRB_wheel_link"[label=" Broadcaster: /rosbag_play\nAverage rate: 47.822\nBuffer length: 4.977\nMost recent transform: 1389744577.374\nOldest transform: 1389744572.397\n"];
+"base_link" -> "wheelRF_linkWheel_link"[label=" Broadcaster: /rosbag_play\nAverage rate: 47.822\nBuffer length: 4.977\nMost recent transform: 1389744577.374\nOldest transform: 1389744572.397\n"];
+"wheelRF_linkWheel_link" -> "wheelRF_wheel_link"[label=" Broadcaster: /rosbag_play\nAverage rate: 47.822\nBuffer length: 4.977\nMost recent transform: 1389744577.374\nOldest transform: 1389744572.397\n"];
+"base_link" -> "base_laser_link"[label=" Broadcaster: /rosbag_play\nAverage rate: 50.202\nBuffer length: 4.98\nMost recent transform: 1389744577.88\nOldest transform: 1389744572.901\n"];
+"base_link" -> "camera_link"[label=" Broadcaster: /rosbag_play\nAverage rate: 10.192\nBuffer length: 4.906\nMost recent transform: 1389744577.41\nOldest transform: 1389744572.504\n"];
+"camera_link" -> "camera_rgb_frame"[label=" Broadcaster: /rosbag_play\nAverage rate: 10.191\nBuffer length: 4.906\nMost recent transform: 1389744577.447\nOldest transform: 1389744572.541\n"];
+"camera_depth_frame" -> "camera_depth_optical_frame"[label=" Broadcaster: /rosbag_play\nAverage rate: 10.193\nBuffer length: 4.905\nMost recent transform: 1389744577.466\nOldest transform: 1389744572.561\n"];
+"camera_link" -> "camera_depth_frame"[label=" Broadcaster: /rosbag_play\nAverage rate: 10.196\nBuffer length: 4.806\nMost recent transform: 1389744577.387\nOldest transform: 1389744572.581\n"];
+"camera_rgb_frame" -> "camera_rgb_optical_frame"[label=" Broadcaster: /rosbag_play\nAverage rate: 10.196\nBuffer length: 4.806\nMost recent transform: 1389744577.387\nOldest transform: 1389744572.581\n"];
+edge [style=invis];
+ subgraph cluster_legend { style=bold; color=black; label ="view_frames Result";
+"Recorded at time: 1668548739.7057967"[ shape=plaintext ] ;
+}->"map";
+}

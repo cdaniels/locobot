@@ -3,7 +3,7 @@
 
   <!-- Initial Pose and Goal Publisher -->
   <!-- Publish: /initialpose, /move_base_simple/goal -->
-  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find locobot_localization)/config/amcl.rviz" >
+  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find locobot_localization)/config/slam_toolbox_lifelong.rviz" >
   </node> 
 
   <!-- SLAM toolbox localization-->
@@ -13,14 +13,16 @@
   <!--$node pkg="slam_toolbox" name="localization_slam_toolbox_node" type="localization_slam_toolbox_node" args="scan:=locobot/scan tf:=locobot/tf" /-->
   <node pkg="slam_toolbox" name="lifelong" type="lifelong_slam_toolbox_node" args="scan:=locobot/scan tf:=locobot/tf">
     <param name="do_loop_closing" value="true"/>
+    <param name="map_update_interval" value="1"/>
   </node>
   <!--include file="$(find slam_toolbox)/offline.launch" args="scan:=locobot/scan odom:=locobot/odom tf:=locobot/tf"/-->
   <!--include file="$(find slam_toolbox)/offline.launch"/-->
 
+
+  <!-- map to odom will additionally be provided by the AMCL or other package -->
+  <node pkg="tf2_ros" type="static_transform_publisher" name="map_to_odom" args="0 0 0 0 0 0 1 map odom" />
+
   <!-- Bag File-->
-  <arg name="bag_file_name" default="$(find locobot_localization)/bags/2022-09-29-20-00-53.bag"/>
-  <!--arg name="bag_file_name" default="$(find locobot_localization)/bags/Output_Locobot_DAN407.bag"/-->
-  <!-- play bag file for localization sim -->
-  <node pkg="rosbag" type="play" name="rosbag_play" output="screen" args="$(arg bag_file_name)"/>
+  <include file="$(find locobot_localization)/launch/raw_bag_player.launch" />
 
 </launch>

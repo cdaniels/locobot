@@ -1,0 +1,75 @@
+<launch>
+  <include file="$(find locobot_localization)/launch/tf_fix.launch" />
+
+  <!-- Initial Pose and Goal Publisher -->
+  <!-- Publish: /initialpose, /move_base_simple/goal -->
+  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find locobot_localization)/config/slam_toolbox_lifelong.rviz" >
+  </node> 
+
+  <arg name="scan_topic"  default="scan" />
+  <arg name="base_frame"  default="base_link"/>
+  <arg name="odom_frame"  default="odom"/>
+
+  <!-- Gmapping SLAM-->
+  <!-- Subscribe: /scan, /tf -->
+  <!-- Publish: 
+        /map_metadata (nav_msgs/MapMetaData) Get the map data from this topic, which is latched, and updated periodically.
+        /map (nav_msgs/OccupancyGrid) Get the map data from this topic, which is latched, and updated periodically
+        /entropy (std_msgs/Float64) Estimate of the entropy of the distribution over the robot's pose (a higher value indicates greater uncertainty). New in 1.1.0.-->
+
+  <!-- Required tf Transforms
+          <the frame attached to incoming scans> → base_link 
+            usually a fixed value, broadcast periodically by a robot_state_publisher, or a tf static_transform_publisher.
+          base_link → odom usually 
+            provided by the odometry system (e.g., the driver for the mobile base)
+       Provided tf Transforms
+          map → odom
+            the current estimate of the robot's pose within the map frame-->
+  <node pkg="gmapping" name="slam_gmapping" type="slam_gmapping"  >
+    <!--param name="base_frame" value="locobot/base_link"/-->
+    <param name="base_frame" value="$(arg base_frame)"/>
+    <param name="odom_frame" value="$(arg odom_frame)"/>
+    <param name="map_update_interval" value="15.0"/>
+    <param name="maxUrange" value="6.0"/>
+    <param name="maxRange" value="8.0"/>
+    <param name="sigma" value="0.05"/>
+    <param name="kernelSize" value="1"/>
+    <param name="lstep" value="0.05"/>
+    <param name="astep" value="0.05"/>
+    <param name="iterations" value="5"/>
+    <param name="lsigma" value="0.075"/>  
+    <param name="ogain" value="3.0"/>
+    <param name="lskip" value="0"/>
+    <param name="minimumScore" value="200"/>
+    <param name="srr" value="0.01"/>
+    <param name="srt" value="0.02"/>
+    <param name="str" value="0.01"/>
+    <param name="stt" value="0.02"/>
+    <param name="linearUpdate" value="0.5"/>
+    <param name="angularUpdate" value="0.436"/>
+    <param name="temporalUpdate" value="-1.0"/>
+    <param name="resampleThreshold" value="0.5"/>
+    <param name="particles" value="80"/>
+  <!--
+    <param name="xmin" value="-50.0"/>
+    <param name="ymin" value="-50.0"/>
+    <param name="xmax" value="50.0"/>
+    <param name="ymax" value="50.0"/>
+  make the starting size small for the benefit of the Android client's memory...
+  -->
+    <param name="xmin" value="-1.0"/>
+    <param name="ymin" value="-1.0"/>
+    <param name="xmax" value="1.0"/>
+    <param name="ymax" value="1.0"/>
+    <param name="delta" value="0.05"/>
+    <param name="llsamplerange" value="0.01"/>
+    <param name="llsamplestep" value="0.01"/>
+    <param name="lasamplerange" value="0.005"/>
+    <param name="lasamplestep" value="0.005"/>
+    <remap from="scan" to="$(arg scan_topic)"/>
+  </node>
+
+  <!-- replay prerecorded data -->
+  <!--include file="$(find locobot_localization)/launch/raw_bag_player.launch" /-->
+  <include file="$(find locobot_localization)/launch/fixed_bag_player.launch" />
+</launch>
